@@ -4,7 +4,7 @@
 
 <div class="container">
     <h1 class="header">Here you can see all the restaurants in Shkodra</h1>
-    <a href="/api/restaurants" target="_blank" class="api-link">View restaurants API</a>
+    <a href="/api/restaurants" class="api-link">View restaurants API</a>
 
     <ul class="restaurant-list">
         {#each data.restaurants as res}
