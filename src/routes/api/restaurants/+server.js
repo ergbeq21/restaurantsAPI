@@ -1,7 +1,7 @@
 
 
 //get all restaurants
-import { createConnection } from '$lib/db/mysql.js';
+import { createConnection } from '$lib/db/mysql';
 
 export async function GET({ params }) {
     const { uuid } = params;
