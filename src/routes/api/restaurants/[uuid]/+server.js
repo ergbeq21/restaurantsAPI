@@ -1,7 +1,37 @@
 import { createConnection } from '$lib/db/mysql';
 
+import { BASIC_AUTH_USER, BASIC_AUTH_PASSWORD } from '$env/static/private';
+
+
+
+async function authenticate(request) {
+    const auth = request.headers.get('authorization');
+    if (!auth || auth !== `Basic ${btoa(`${BASIC_AUTH_USER}:${BASIC_AUTH_PASSWORD}`)}`) {
+        return new Response(null, {
+            status: 401,
+            headers: { 'www-authenticate': 'Basic realm="Restaurants API"' }
+        });
+    }
+
+    const base64Credentials = auth.split(' ')[1];
+    const credentials = atob(base64Credentials);
+    const [username, password] = credentials.split(':');
+
+    if (username !== BASIC_AUTH_USER || password !== BASIC_AUTH_PASSWORD) {
+        return new Response(JSON.stringify({ message: 'Access denied' }), {
+            status: 401,
+            headers: { 'www-authenticate': 'Basic realm="Restaurants API"' }
+        });
+    }
+
+    return null;
+}
+
 //get
 export async function GET({ params }) {
+    const authResponse = await authenticate(request);
+    if (authResponse) return authResponse;
+
     const { uuid } = params;
 	const connection = await createConnection();
     const [rows] =  await connection.execute('SELECT * FROM Restaurants WHERE id = ?', [uuid]);
@@ -16,6 +46,9 @@ export async function GET({ params }) {
   //delete
 
   export async function DELETE({ params }) {
+    const authResponse = await authenticate(request);
+    if (authResponse) return authResponse
+
     const { uuid } = params;
     const connection = await createConnection();
  
@@ -40,7 +73,11 @@ export async function GET({ params }) {
 //put
 
 
-export async function PUT({ params, request }) {
+export async function PUT({ params, request }) 
+{
+    const authResponse = await authenticate(request);
+    if (authResponse) return authResponse;
+
     const { uuid } = params;
     const data = await request.json();
 

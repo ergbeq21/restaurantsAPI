@@ -12,8 +12,35 @@ export async function GET({ params }) {
     });
   }
 
+  async function authenticate(request) {
+    const auth = request.headers.get('authorization');
+    if (!auth) {
+        return new Response(null, {
+            status: 401,
+            headers: { 'www-authenticate': 'Basic realm="Restaurants API"' }
+        });
+    }
+ 
+    const base64Credentials = auth.split(' ')[1];
+    const credentials = atob(base64Credentials);
+    const [username, password] = credentials.split(':');
+ 
+    if (username !== BASIC_AUTH_USER || password !== BASIC_AUTH_PASSWORD) {
+        return new Response(JSON.stringify({ message: 'Access denied' }), {
+            status: 401,
+            headers: { 'www-authenticate': 'Basic realm="Restaurants API"' }
+        });
+    }
+ 
+    return null;
+}
+
   //post a restaurant
   export async function POST({ request }) {
+
+    const authResponse = await authenticate(request);
+    if (authResponse) return authResponse;
+    
       const data = await request.json();
 
       const connection = await createConnection();
