@@ -7,10 +7,8 @@ import {
 	DB_NAME 
 } from '$env/static/private'
 
-let connection = null;
 export function createConnection() {
-	if (!connection) {
-		connection = mysql.createConnection({
+		return mysql.createConnection({
 			host: DB_HOST,
 			user: DB_USER,
 			port: DB_PORT,
@@ -18,5 +16,3 @@ export function createConnection() {
 			database:  DB_NAME
 		});
 	}
-	return connection;
-}

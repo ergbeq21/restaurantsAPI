@@ -1,6 +1,4 @@
-
-
-//get all restaurants
+//get all restaurant
 import { createConnection } from '$lib/db/mysql';
 
 export async function GET({ params }) {
@@ -14,11 +12,7 @@ export async function GET({ params }) {
     });
   }
 
-
   //post a restaurant
-
-  import { createConnection } from '$lib/db/mysql.js';
-
   export async function POST({ request }) {
       const data = await request.json();
 
