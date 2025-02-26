@@ -1,5 +1,5 @@
 
-import { createConnection } from '$lib/db/mysql.js';
+import { createConnection } from '$lib/db/mysql';
 
 //get
 export async function GET({ params }) {
